@@ -1,0 +1,4 @@
+# wechat-bot
+
+- api
+- app
