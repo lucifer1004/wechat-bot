@@ -5,6 +5,8 @@
     "dev:app": "cd app && yarn start",
     "dev:api": "cd api && yarn start:dev",
     "dev": "run-p dev:app dev:api",
+    "start:api": "cd api && yarn start",
+    "start": "run-p dev:app start:api",
     "format": "prettier --write {api,app}/**/*.{js,ts,jsx,tsx,md,json,css}"
   },
   "devDependencies": {
