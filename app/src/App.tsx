@@ -13,7 +13,9 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <button onClick={handleClick}>Click</button>
-      {qrcode === '' ? null : <img src={qrcode} />}
+      {qrcode === '' ? null : (
+        <img src={qrcode} alt="QR code for Wechat login" />
+      )}
     </div>
   )
 }

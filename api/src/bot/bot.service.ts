@@ -15,10 +15,12 @@ export class BotService {
   start(): Promise<string> {
     this.botNest.bot.start()
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      let count = 0
+      setInterval(() => {
         if (!!this.botNest.qrcode) resolve(this.botNest.qrcode)
-        else reject('Timeout')
-      }, 5000)
+        count++
+        if (count > 30) reject('Timeout')
+      }, 1000)
     })
   }
 }
