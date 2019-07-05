@@ -1,4 +1,12 @@
-import {Controller, Post, RequestTimeoutException} from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Delete,
+  RequestTimeoutException,
+  BadRequestException,
+  Get,
+  NotFoundException,
+} from '@nestjs/common'
 import {BotService} from './bot.service'
 
 @Controller('bot')
@@ -12,6 +20,20 @@ export class BotController {
       return {qrcode}
     } catch (e) {
       throw new RequestTimeoutException()
+    }
+  }
+
+  @Get()
+  bot() {
+    return this.botService.user()
+  }
+
+  @Delete()
+  async stop() {
+    try {
+      await this.botService.stop()
+    } catch (e) {
+      throw new BadRequestException()
     }
   }
 }

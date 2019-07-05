@@ -1,21 +1,46 @@
 import {Wechaty} from 'wechaty'
-import {WECHATY_BOT} from '../common/constants'
+import {Interpreter} from 'xstate'
+import {BOT_FACTORY, BOT_MACHINE} from '../common/constants'
+import {BotMachine} from './bot.machine'
 
 export const BotFactory = {
-  provide: WECHATY_BOT,
-  useFactory: () => {
+  provide: BOT_FACTORY,
+  useFactory: (botMachine: Interpreter<typeof BotMachine>) => {
     const botNest = {
       bot: new Wechaty(),
       qrcode: undefined,
+      userName: undefined,
     }
 
+    botMachine
+      .onTransition(state => {
+        botNest.qrcode = (state.context as any).qrcode
+        botNest.userName = (state.context as any).userName
+      })
+      .start()
+
     const onScan = (qrcode: string) => {
-      botNest.qrcode = qrcode
-      console.log(qrcode)
+      botMachine.send('SCAN', {qrcode})
+    }
+
+    const onLogin = () => {
+      botMachine.send('LOGIN', {userName: botNest.bot.userSelf().name()})
+    }
+
+    const onLogout = () => {
+      botMachine.send('LOGOUT')
+    }
+
+    const onStop = () => {
+      botMachine.send('STOP')
     }
 
     botNest.bot.on('scan', onScan)
+    botNest.bot.on('login', onLogin)
+    botNest.bot.on('logout', onLogout)
+    botNest.bot.on('stop', onStop)
 
     return botNest
   },
+  inject: [BOT_MACHINE],
 }

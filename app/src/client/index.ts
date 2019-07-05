@@ -8,3 +8,8 @@ const headers = {
 
 export const startBot = () =>
   axios.post(`${BASE_URI}/bot`, {headers}).then(res => res.data.qrcode)
+
+export const currentUser = () =>
+  axios.get(`${BASE_URI}/bot`, {headers}).then(res => res.data.name)
+
+export const stopBot = () => axios.delete(`${BASE_URI}/bot`, {headers})
