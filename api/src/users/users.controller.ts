@@ -7,6 +7,8 @@ import {
   Param,
   Req,
   Body,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common'
 import {Request} from 'express'
 import {User} from './user.entity'
@@ -18,27 +20,43 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto)
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto)
+    if (!!user) {
+      return user
+    }
+    throw new BadRequestException()
   }
 
   @Get()
-  findAll(@Req() request: Request): Promise<User[]> {
+  async findAll(@Req() request: Request): Promise<User[]> {
     return this.usersService.findAll()
   }
 
   @Get(':id')
-  findOnes(@Param('id') id: string): Promise<User> {
-    return this.usersService.findById(id)
+  async findOne(@Param('id') id: string): Promise<User> {
+    const user = await this.usersService.findById(id)
+    if (!!user) {
+      return user
+    }
+    throw new NotFoundException(id)
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto)
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.update(id, updateUserDto)
+    if (!!user) {
+      return user
+    }
+    throw new BadRequestException()
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    this.usersService.delete(id)
+  async remove(@Param('id') id: string) {
+    try {
+      await this.usersService.delete(id)
+    } catch (e) {
+      throw new BadRequestException()
+    }
   }
 }

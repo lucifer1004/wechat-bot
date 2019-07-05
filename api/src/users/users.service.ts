@@ -2,74 +2,61 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  Inject,
 } from '@nestjs/common'
 import {InjectRepository} from '@nestjs/typeorm'
 import {Repository} from 'typeorm'
+import {AWAKE} from '../common/constants'
 import {User} from './user.entity'
 import {CreateUserDto, UpdateUserDto} from './user.dto'
+import {ActivitiesService} from '../activities/activities.service'
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @Inject(ActivitiesService)
+    private readonly activitiesService: ActivitiesService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const newUser = this.usersRepository.create({
-        name: createUserDto.name,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      await this.usersRepository.insert(newUser)
-      return newUser
-    } catch (e) {
-      throw new BadRequestException()
-    }
+    const newUser = this.usersRepository.create({
+      name: createUserDto.name,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    await this.usersRepository.insert(newUser)
+    await this.activitiesService.start(newUser, AWAKE)
+    return newUser
   }
 
   async delete(id: string) {
-    try {
-      await this.usersRepository.delete({id: parseInt(id, 10)})
-    } catch (e) {
-      throw new BadRequestException()
-    }
+    await this.usersRepository.delete({id: parseInt(id, 10)})
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    try {
-      const user = await this.usersRepository.findOne({id: parseInt(id, 10)})
-      if (!user) {
-        throw new NotFoundException(id)
-      }
-      const updatedUser = {
-        ...user,
-        name: updateUserDto.name,
-        updatedAt: new Date(),
-      }
-      await this.usersRepository.update(id, updatedUser)
-      return updatedUser
-    } catch (e) {
-      throw new BadRequestException()
-    }
-  }
-
-  async findById(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({id: parseInt(id, 10)})
     if (!user) {
       throw new NotFoundException(id)
     }
+    const updatedUser = {
+      ...user,
+      name: updateUserDto.name,
+      updatedAt: new Date(),
+    }
+    await this.usersRepository.update(id, updatedUser)
+    return updatedUser
+  }
+
+  async findById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({id: parseInt(id, 10)})
     return user
   }
 
-  async findOrCreate(name: string): Promise<User> {
+  async findByName(name: string): Promise<User> {
     const user = await this.usersRepository.findOne({name})
-    if (!!user) {
-      return user
-    }
-
-    return await this.create({name})
+    return user
   }
 
   async findAll(): Promise<User[]> {

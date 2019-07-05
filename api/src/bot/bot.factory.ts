@@ -3,6 +3,7 @@ import {Wechaty, Message} from 'wechaty'
 import {interpret, Interpreter} from 'xstate'
 import {BotMachine} from './bot.machine'
 import {UsersService} from '../users/users.service'
+import {SUBSCRIBE_CN} from '../common/constants'
 
 @Injectable()
 export class BotFactory {
@@ -38,8 +39,12 @@ export class BotFactory {
 
   async onMessage(msg: Message) {
     const name = msg.from().name()
+    const text = msg.text()
     if (name !== this.userName) {
-      await this.usersService.findOrCreate(name)
+      const user = await this.usersService.findByName(name)
+      if (!user && text === SUBSCRIBE_CN) {
+        this.usersService.create({name})
+      }
     }
   }
 

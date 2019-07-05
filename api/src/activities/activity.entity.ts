@@ -2,12 +2,12 @@ import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm'
 import {User} from '../users/user.entity'
 
 @Entity()
-export class Cron {
+export class Activity {
   @PrimaryGeneratedColumn()
   id: number
 
   @Column()
-  expression: string
+  type: string
 
   @ManyToOne(type => User, {lazy: true})
   user: User
@@ -16,5 +16,5 @@ export class Cron {
   createdAt: Date
 
   @Column()
-  updatedAt: Date
+  endAt: Date
 }

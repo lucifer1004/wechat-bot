@@ -6,6 +6,7 @@ import {
   Unique,
 } from 'typeorm'
 import {Cron} from '../crons/cron.entity'
+import {Activity} from '../activities/activity.entity'
 
 @Entity()
 @Unique('username_validation', ['name'])
@@ -18,6 +19,9 @@ export class User {
 
   @OneToMany(type => Cron, cron => cron.user, {lazy: true})
   crons: Cron[]
+
+  @OneToMany(type => Activity, activity => activity.user, {lazy: true})
+  activities: Activity[]
 
   @Column()
   createdAt: Date

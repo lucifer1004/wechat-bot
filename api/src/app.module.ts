@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv'
 import {AppController} from './app.controller'
 import {AppService} from './app.service'
 import {BotModule} from './bot/bot.module'
+import {ActivitiesModule} from './activities/activities.module'
 import {UsersModule} from './users/users.module'
 
 dotenv.config()
@@ -24,6 +25,7 @@ dotenv.config()
     }),
     UsersModule,
     BotModule,
+    ActivitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
