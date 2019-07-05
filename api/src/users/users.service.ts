@@ -63,6 +63,15 @@ export class UsersService {
     return user
   }
 
+  async findOrCreate(name: string): Promise<User> {
+    const user = await this.usersRepository.findOne({name})
+    if (!!user) {
+      return user
+    }
+
+    return await this.create({name})
+  }
+
   async findAll(): Promise<User[]> {
     return await this.usersRepository.find()
   }

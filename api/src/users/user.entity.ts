@@ -1,7 +1,14 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  Unique,
+} from 'typeorm'
 import {Cron} from '../crons/cron.entity'
 
 @Entity()
+@Unique('username_validation', ['name'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number

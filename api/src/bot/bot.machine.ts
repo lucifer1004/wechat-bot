@@ -1,5 +1,4 @@
-import {Machine, interpret, assign} from 'xstate'
-import {BOT_MACHINE} from '../common/constants'
+import {Machine, assign} from 'xstate'
 
 export const BotMachine = Machine({
   initial: 'starting',
@@ -40,10 +39,3 @@ export const BotMachine = Machine({
     },
   },
 })
-
-export const BotMachineProvider = {
-  provide: BOT_MACHINE,
-  useFactory: () => {
-    return interpret(BotMachine)
-  },
-}
