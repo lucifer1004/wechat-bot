@@ -3,11 +3,15 @@ import {Wechaty, Message} from 'wechaty'
 import {interpret, Interpreter} from 'xstate'
 import {BotMachine} from './bot.machine'
 import {UsersService} from '../users/users.service'
+import {CronsService} from '../crons/crons.service'
 import {SUBSCRIBE_CN} from '../common/constants'
 
 @Injectable()
 export class BotFactory {
-  constructor(private readonly usersService: UsersService) {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly cronsService: CronsService,
+  ) {
     this.botMachine = interpret(BotMachine)
       .onTransition(state => {
         this.qrcode = (state.context as any).qrcode
@@ -44,6 +48,12 @@ export class BotFactory {
       const user = await this.usersService.findByName(name)
       if (!user && text === SUBSCRIBE_CN) {
         this.usersService.create({name})
+      }
+      if (user && text === '定时') {
+        this.cronsService.create(user, '*/20 * * * * *', async () => {
+          await msg.from().say('哈哈😀')
+          return false
+        })
       }
     }
   }

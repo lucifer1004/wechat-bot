@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-  Inject,
-} from '@nestjs/common'
+import {Injectable, NotFoundException, Inject} from '@nestjs/common'
 import {InjectRepository} from '@nestjs/typeorm'
 import {Repository} from 'typeorm'
 import {AWAKE} from '../common/constants'
@@ -36,7 +31,7 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.usersRepository.findOne({id: parseInt(id, 10)})
+    const user = await this.findById(id)
     if (!user) {
       throw new NotFoundException(id)
     }
@@ -50,13 +45,11 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<User> {
-    const user = await this.usersRepository.findOne({id: parseInt(id, 10)})
-    return user
+    return await this.usersRepository.findOne({id: parseInt(id, 10)})
   }
 
   async findByName(name: string): Promise<User> {
-    const user = await this.usersRepository.findOne({name})
-    return user
+    return await this.usersRepository.findOne({name})
   }
 
   async findAll(): Promise<User[]> {

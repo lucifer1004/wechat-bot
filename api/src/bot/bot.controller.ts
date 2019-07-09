@@ -5,7 +5,6 @@ import {
   RequestTimeoutException,
   BadRequestException,
   Get,
-  NotFoundException,
 } from '@nestjs/common'
 import {BotService} from './bot.service'
 
