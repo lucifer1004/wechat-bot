@@ -1,10 +1,10 @@
-import {Inject, Injectable} from '@nestjs/common'
+import {Injectable, Inject, forwardRef} from '@nestjs/common'
 import {BotFactory} from './bot.factory'
 
 @Injectable()
 export class BotService {
   constructor(
-    @Inject(BotFactory)
+    @Inject(forwardRef(() => BotFactory))
     private readonly botFactory: BotFactory,
   ) {}
 
@@ -28,5 +28,9 @@ export class BotService {
 
   async stop() {
     await this.botFactory.stop()
+  }
+
+  async send(name: string, msg: string) {
+    await this.botFactory.send(name, msg)
   }
 }

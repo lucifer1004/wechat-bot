@@ -11,7 +11,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    @Inject(ActivitiesService)
     private readonly activitiesService: ActivitiesService,
   ) {}
 

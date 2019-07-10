@@ -13,6 +13,12 @@ export class Cron {
   user: User
 
   @Column()
+  type: number
+
+  @Column({nullable: true})
+  message?: string
+
+  @Column()
   createdAt: Date
 
   @Column()

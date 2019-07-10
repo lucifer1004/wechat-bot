@@ -4,7 +4,7 @@ import {interpret, Interpreter} from 'xstate'
 import {BotMachine} from './bot.machine'
 import {UsersService} from '../users/users.service'
 import {CronsService} from '../crons/crons.service'
-import {SUBSCRIBE_CN} from '../common/constants'
+import {SUBSCRIBE_CN, CRON_TYPE} from '../common/constants'
 
 @Injectable()
 export class BotFactory {
@@ -50,10 +50,12 @@ export class BotFactory {
         this.usersService.create({name})
       }
       if (user && text === '定时') {
-        this.cronsService.create(user, '*/20 * * * * *', async () => {
-          await msg.from().say('哈哈😀')
-          return false
-        })
+        this.cronsService.create(
+          user,
+          '*/20 * * * * *',
+          CRON_TYPE.PLAIN,
+          '哈哈😀',
+        )
       }
     }
   }
@@ -84,5 +86,12 @@ export class BotFactory {
 
   code() {
     return this.qrcode
+  }
+
+  async send(name: string, msg: string) {
+    const contact = await this.bot.Contact.find({name})
+    if (contact) {
+      await contact.say(msg)
+    }
   }
 }
