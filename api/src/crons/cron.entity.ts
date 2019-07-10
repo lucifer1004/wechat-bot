@@ -10,7 +10,7 @@ export class Cron {
   expression: string
 
   @ManyToOne(type => User, {lazy: true})
-  user: User
+  user: User | Promise<User>
 
   @Column()
   type: number

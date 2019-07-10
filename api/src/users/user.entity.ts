@@ -18,10 +18,10 @@ export class User {
   name: string
 
   @OneToMany(type => Cron, cron => cron.user, {lazy: true})
-  crons: Cron[]
+  crons: Cron[] | Promise<Cron>[]
 
   @OneToMany(type => Activity, activity => activity.user, {lazy: true})
-  activities: Activity[]
+  activities: Activity[] | Promise<Activity>[]
 
   @Column()
   createdAt: Date

@@ -53,8 +53,9 @@ export class CronsService {
         this.schedule.scheduleCronJob(
           cron.id.toString(),
           cron.expression,
-          () => {
-            this.botService.send(cron.user.name, cron.message)
+          async () => {
+            const user = await cron.user
+            this.botService.send(user.name, cron.message)
             return false
           },
         )

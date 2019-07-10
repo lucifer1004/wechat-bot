@@ -10,7 +10,7 @@ export class Activity {
   type: string
 
   @ManyToOne(type => User, {lazy: true})
-  user: User
+  user: User | Promise<User>
 
   @Column()
   createdAt: Date
