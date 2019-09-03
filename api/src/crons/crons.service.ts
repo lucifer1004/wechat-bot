@@ -5,7 +5,7 @@ import {Repository} from 'typeorm'
 import {Cron} from './cron.entity'
 import {User} from '../users/user.entity'
 import {BotService} from '../bot/bot.service'
-import {CRON_TYPE} from 'src/common/constants'
+import {CRON_TYPE} from '../common/constants'
 
 @Injectable()
 export class CronsService {
